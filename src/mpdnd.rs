@@ -12,6 +12,7 @@ use mpd_client::{
 use notify_rust::Notification;
 use tokio::stream::StreamExt;
 
+// TODO: Custom appname
 const APPNAME: &str = "mpd";
 
 #[derive(Debug)]
@@ -50,6 +51,7 @@ impl MpdND {
             let status = self.client.command(commands::Status).await?;
 
             let song = song_in_queue.song;
+            // TODO: custom unknown title/album text
             let title = song.title().unwrap_or("Unknown title");
             let album = song.album().unwrap_or("Unknown album");
 
@@ -57,6 +59,7 @@ impl MpdND {
             let library = PathBuf::from(self.config.mpd.library());
             let image_path = library.join(file_path).parent().and_then(|v| {
                 if v.is_dir() {
+                    // TODO: setting to look for only some extensions
                     ["png", "jpg", "tiff", "bmp"].iter().find_map(|ext| {
                         let joined = v.join(format!("cover.{}", ext));
                         if joined.exists() {
@@ -70,17 +73,20 @@ impl MpdND {
                 }
             });
 
+            // TODO: custom state text
             let state = match status.state {
                 PlayState::Playing => "Playing",
                 PlayState::Stopped => "Stopped",
                 PlayState::Paused => "Paused",
             };
 
+            // TODO: custom status symbols
             let repeat = if status.repeat { "r" } else { "" };
             let random = if status.random { "z" } else { "" };
             let consume = if status.consume { "c" } else { "" };
             let statuses = format!("[{}{}{}]", repeat, random, consume);
 
+            // TODO: custom duration formatting?
             let body_time = match (status.elapsed, status.duration) {
                 (Some(elapsed), Some(duration)) => {
                     let elap = Duration::from_std(elapsed)?;
@@ -90,15 +96,20 @@ impl MpdND {
                 _ => String::new(),
             };
 
+            // TODO: custom summary/body format
             let summary = format!("{} {} - {}", state, statuses, title);
             let body = format!("<i>{}</i>\n{}", album, body_time);
 
+            // TODO: custom timeout
+            // TODO: relevant notification actions
             let mut notification = Notification::new();
             notification
                 .appname(APPNAME)
                 .summary(&summary)
                 .body(&body)
                 .timeout(3000);
+
+            // TODO: enable/disable cover art
             if let Some(icon) = image_path {
                 notification.icon(&icon.to_string_lossy());
             }
