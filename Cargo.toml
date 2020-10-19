@@ -1,0 +1,16 @@
+[package]
+name = "mpdnd"
+version = "0.1.0"
+authors = ["Eric Zhao <21zhaoe@protonmail.com>"]
+edition = "2018"
+
+[dependencies]
+anyhow = "1.0.33"
+chrono = "0.4.19"
+clap = "3.0.0-beta.2"
+mpd_client = { git = "https://github.com/elomatreb/mpd_client", rev = "2e60880f3f6e89a30c69724d1493c4b59e1d0e9d" }
+notify-rust = "4"
+serde = { version = "1.0", features = ["derive"] }
+tokio = { version = "0.2.13", features = ["rt-core", "tcp", "uds", "sync", "stream", "macros", "dns"] }
+toml = "0.5.7"
+xdg = "2.1"
