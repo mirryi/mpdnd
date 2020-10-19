@@ -38,14 +38,14 @@ impl MpdND {
         while let Some(subsys) = self.state_changes.next().await {
             let subsys = subsys?;
             if subsys == Subsystem::Player || subsys == Subsystem::Queue {
-                self.notify_song().await?;
+                self.notify().await?;
             }
         }
 
         Ok(())
     }
 
-    async fn notify_song(&self) -> Result<()> {
+    pub async fn notify(&self) -> Result<()> {
         let current = self.client.command(commands::CurrentSong).await?;
         if let Some(song_in_queue) = current {
             let status = self.client.command(commands::Status).await?;
