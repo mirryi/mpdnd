@@ -1,13 +1,13 @@
 use crate::config::Configuration;
 
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 use anyhow::Result;
 use chrono::Duration;
 use mpd_client::{
     commands::{
         self,
-        responses::{PlayState, Status},
+        responses::{PlayState, Song, Status},
     },
     state_changes::StateChanges,
     Client, Subsystem,
@@ -89,33 +89,7 @@ impl MpdND {
                 .timeout(Timeout::Milliseconds(self.config.notification.timeout));
 
             if self.config.notification.cover_art_enabled {
-                let file_path = song.file_path();
-                let library = PathBuf::from(self.config.mpd.library());
-                let image_path = library
-                    .join(file_path)
-                    .parent()
-                    .and_then(|v| {
-                        if v.is_dir() {
-                            self.config.mpd.cover_art_extensions.iter().find_map(|ext| {
-                                let joined = v.join(format!("cover.{}", ext));
-                                if joined.exists() {
-                                    Some(joined)
-                                } else {
-                                    None
-                                }
-                            })
-                        } else {
-                            None
-                        }
-                    })
-                    .or_else(|| {
-                        self.config
-                            .notification
-                            .default_cover_art
-                            .clone()
-                            .map(PathBuf::from)
-                    });
-
+                let image_path = self.cover_art_path(&song);
                 if let Some(icon) = image_path {
                     notification.icon(&icon.to_string_lossy());
                 }
@@ -125,6 +99,37 @@ impl MpdND {
         }
 
         Ok(())
+    }
+
+    fn cover_art_path(&self, song: &Song) -> Option<PathBuf> {
+        let file_path = song.file_path();
+        let library = PathBuf::from(self.config.mpd.library());
+        library
+            .join(file_path)
+            .parent()
+            .and_then(|v| self.cover_art_in_dir(v))
+            .or_else(|| {
+                self.config
+                    .notification
+                    .default_cover_art
+                    .clone()
+                    .map(PathBuf::from)
+            })
+    }
+
+    fn cover_art_in_dir<P: AsRef<Path>>(&self, dir: P) -> Option<PathBuf> {
+        if dir.as_ref().is_dir() {
+            self.config.mpd.cover_art_extensions.iter().find_map(|ext| {
+                let joined = dir.as_ref().join(format!("cover.{}", ext));
+                if joined.exists() {
+                    Some(joined)
+                } else {
+                    None
+                }
+            })
+        } else {
+            None
+        }
     }
 
     fn statuses_segment(&self, status: &Status) -> String {

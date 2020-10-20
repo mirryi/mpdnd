@@ -6,24 +6,24 @@ use xdg::BaseDirectories;
 
 #[derive(Clone, Debug, Deserialize)]
 pub struct Configuration {
-    pub mpd: MPD,
+    pub mpd: Mpd,
     #[serde(default = "Notification::default")]
     pub notification: Notification,
 }
 
 #[derive(Clone, Debug, Deserialize)]
-pub struct MPD {
+pub struct Mpd {
     pub host: String,
     pub port: u32,
     pub library: String,
     #[serde(
         rename = "cover-art-extensions",
-        default = "MPD::default_cover_art_extensions"
+        default = "Mpd::default_cover_art_extensions"
     )]
     pub cover_art_extensions: Vec<String>,
 }
 
-impl MPD {
+impl Mpd {
     pub fn address(&self) -> String {
         format!("{}:{}", self.host, self.port)
     }
