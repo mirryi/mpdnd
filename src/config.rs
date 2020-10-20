@@ -6,24 +6,24 @@ use xdg::BaseDirectories;
 
 #[derive(Clone, Debug, Deserialize)]
 pub struct Configuration {
-    pub mpd: MPDConfiguration,
-    #[serde(default = "NotificationConfiguration::default")]
-    pub notification: NotificationConfiguration,
+    pub mpd: MPD,
+    #[serde(default = "Notification::default")]
+    pub notification: Notification,
 }
 
 #[derive(Clone, Debug, Deserialize)]
-pub struct MPDConfiguration {
+pub struct MPD {
     pub host: String,
     pub port: u32,
     pub library: String,
     #[serde(
         rename = "cover-art-extensions",
-        default = "MPDConfiguration::default_cover_art_extensions"
+        default = "MPD::default_cover_art_extensions"
     )]
     pub cover_art_extensions: Vec<String>,
 }
 
-impl MPDConfiguration {
+impl MPD {
     pub fn address(&self) -> String {
         format!("{}:{}", self.host, self.port)
     }
@@ -41,22 +41,22 @@ impl MPDConfiguration {
 }
 
 #[derive(Clone, Debug, Deserialize)]
-pub struct NotificationConfiguration {
-    #[serde(default = "NotificationConfiguration::default_appname")]
+pub struct Notification {
+    #[serde(default = "Notification::default_appname")]
     pub appname: String,
     #[serde(
         rename = "unknown-title-text",
-        default = "NotificationConfiguration::default_unknown_title_text"
+        default = "Notification::default_unknown_title_text"
     )]
     pub unknown_title_text: String,
     #[serde(
         rename = "unknown-album-text",
-        default = "NotificationConfiguration::default_unknown_album_text"
+        default = "Notification::default_unknown_album_text"
     )]
     pub unknown_album_text: String,
 }
 
-impl Default for NotificationConfiguration {
+impl Default for Notification {
     fn default() -> Self {
         Self {
             appname: Self::default_appname(),
@@ -66,7 +66,7 @@ impl Default for NotificationConfiguration {
     }
 }
 
-impl NotificationConfiguration {
+impl Notification {
     fn default_appname() -> String {
         String::from("mpd")
     }
