@@ -1,7 +1,7 @@
 use std::path::{Path, PathBuf};
 
 use anyhow::{anyhow, Result};
-use serde::Deserialize;
+use serde::{de::Error, Deserialize, Deserializer};
 use xdg::BaseDirectories;
 
 #[derive(Clone, Debug, Deserialize)]
@@ -15,6 +15,7 @@ pub struct Configuration {
 pub struct Mpd {
     pub host: String,
     pub port: u32,
+    #[serde(deserialize_with = "deserialize_tilde_path")]
     pub library: String,
     #[serde(
         rename = "cover-art-extensions",
@@ -49,7 +50,10 @@ pub struct Notification {
         default = "Notification::default_cover_art_enabled"
     )]
     pub cover_art_enabled: bool,
-    #[serde(rename = "default-cover-art")]
+    #[serde(
+        rename = "default-cover-art",
+        deserialize_with = "deserialize_tilde_path_op"
+    )]
     pub default_cover_art: Option<String>,
     #[serde(default = "NotificationText::default")]
     pub text: NotificationText,
@@ -183,4 +187,34 @@ pub fn default_file() -> Result<PathBuf> {
     xdg_dirs
         .find_config_file("config.toml")
         .ok_or_else(|| anyhow!("could not find configuration file"))
+}
+
+fn deserialize_tilde_path<'de, D>(deserializer: D) -> std::result::Result<String, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    let s: String = Deserialize::deserialize(deserializer)?;
+    expand_tilde::<D>(&s)
+}
+
+fn deserialize_tilde_path_op<'de, D>(
+    deserializer: D,
+) -> std::result::Result<Option<String>, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    let op: Option<String> = Deserialize::deserialize(deserializer)?;
+    match op {
+        Some(s) => Ok(Some(expand_tilde::<D>(&s)?)),
+        None => Ok(None),
+    }
+}
+
+fn expand_tilde<'de, D>(s: &str) -> std::result::Result<String, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    shellexpand::full(s)
+        .map(|v| v.into_owned())
+        .map_err(D::Error::custom)
 }
