@@ -5,7 +5,10 @@ use std::path::PathBuf;
 use anyhow::Result;
 use chrono::Duration;
 use mpd_client::{
-    commands::{self, responses::PlayState},
+    commands::{
+        self,
+        responses::{PlayState, Status},
+    },
     state_changes::StateChanges,
     Client, Subsystem,
 };
@@ -55,18 +58,13 @@ impl MpdND {
                 .album()
                 .unwrap_or(&self.config.notification.text.unknown_album);
 
-            // TODO: custom state text
             let state = match status.state {
-                PlayState::Playing => "Playing",
-                PlayState::Stopped => "Stopped",
-                PlayState::Paused => "Paused",
+                PlayState::Playing => &self.config.notification.text.playing,
+                PlayState::Paused => &self.config.notification.text.paused,
+                PlayState::Stopped => &self.config.notification.text.stopped,
             };
 
-            // TODO: custom status symbols
-            let repeat = if status.repeat { "r" } else { "" };
-            let random = if status.random { "z" } else { "" };
-            let consume = if status.consume { "c" } else { "" };
-            let statuses = format!("{}{}{}", repeat, random, consume);
+            let statuses = self.statuses_segment(&status);
 
             // TODO: custom duration formatting?
             let body_time = match (status.elapsed, status.duration) {
@@ -79,12 +77,7 @@ impl MpdND {
             };
 
             // TODO: custom summary/body format
-            let statuses_segment = if statuses == "" {
-                String::new()
-            } else {
-                format!("[{}] ", statuses)
-            };
-            let summary = format!("{} {}- {}", state, statuses_segment, title);
+            let summary = format!("{} {}- {}", state, statuses, title);
             let body = format!("<i>{}</i>\n{}", album, body_time);
 
             // TODO: relevant notification actions
@@ -123,7 +116,6 @@ impl MpdND {
                             .map(PathBuf::from)
                     });
 
-                // TODO: enable/disable cover art
                 if let Some(icon) = image_path {
                     notification.icon(&icon.to_string_lossy());
                 }
@@ -133,6 +125,33 @@ impl MpdND {
         }
 
         Ok(())
+    }
+
+    fn statuses_segment(&self, status: &Status) -> String {
+        let statuses_appear = status.repeat || status.random || status.consume;
+        if !statuses_appear {
+            return String::new();
+        }
+
+        let repeat = if status.repeat {
+            &self.config.notification.text.repeat
+        } else {
+            ""
+        };
+        let random = if status.random {
+            &self.config.notification.text.random
+        } else {
+            ""
+        };
+        let consume = if status.consume {
+            &self.config.notification.text.consume
+        } else {
+            ""
+        };
+
+        let group_l = &self.config.notification.text.status_group_left;
+        let group_r = &self.config.notification.text.status_group_right;
+        format!("{}{}{}{}{} ", group_l, repeat, random, consume, group_r)
     }
 }
 

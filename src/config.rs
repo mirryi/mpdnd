@@ -80,6 +80,28 @@ impl Notification {
 pub struct NotificationText {
     #[serde(default = "NotificationText::default_appname")]
     pub appname: String,
+    #[serde(default = "NotificationText::default_playing")]
+    pub playing: String,
+    #[serde(default = "NotificationText::default_paused")]
+    pub paused: String,
+    #[serde(default = "NotificationText::default_stopped")]
+    pub stopped: String,
+    #[serde(default = "NotificationText::default_repeat")]
+    pub repeat: String,
+    #[serde(default = "NotificationText::default_random")]
+    pub random: String,
+    #[serde(default = "NotificationText::default_consume")]
+    pub consume: String,
+    #[serde(
+        rename = "status-group-left",
+        default = "NotificationText::default_status_group_left"
+    )]
+    pub status_group_left: String,
+    #[serde(
+        rename = "status-group-right",
+        default = "NotificationText::default_status_group_right"
+    )]
+    pub status_group_right: String,
     #[serde(
         rename = "unknown-title",
         default = "NotificationText::default_unknown_title_text"
@@ -96,6 +118,14 @@ impl Default for NotificationText {
     fn default() -> Self {
         Self {
             appname: Self::default_appname(),
+            playing: Self::default_playing(),
+            paused: Self::default_paused(),
+            stopped: Self::default_stopped(),
+            repeat: Self::default_repeat(),
+            random: Self::default_random(),
+            consume: Self::default_consume(),
+            status_group_left: Self::default_status_group_left(),
+            status_group_right: Self::default_status_group_right(),
             unknown_title: Self::default_unknown_title_text(),
             unknown_album: Self::default_unknown_album_text(),
         }
@@ -105,6 +135,38 @@ impl Default for NotificationText {
 impl NotificationText {
     fn default_appname() -> String {
         String::from("mpd")
+    }
+
+    fn default_playing() -> String {
+        String::from("Playing")
+    }
+
+    fn default_paused() -> String {
+        String::from("Paused")
+    }
+
+    fn default_stopped() -> String {
+        String::from("Stopped")
+    }
+
+    fn default_repeat() -> String {
+        String::from('r')
+    }
+
+    fn default_random() -> String {
+        String::from('z')
+    }
+
+    fn default_consume() -> String {
+        String::from('c')
+    }
+
+    fn default_status_group_left() -> String {
+        String::from('(')
+    }
+
+    fn default_status_group_right() -> String {
+        String::from(')')
     }
 
     fn default_unknown_title_text() -> String {
