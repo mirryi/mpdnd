@@ -166,11 +166,11 @@ impl NotificationText {
     }
 
     fn default_status_group_left() -> String {
-        String::from('(')
+        String::from('[')
     }
 
     fn default_status_group_right() -> String {
-        String::from(')')
+        String::from(']')
     }
 
     fn default_unknown_title_text() -> String {
