@@ -79,7 +79,7 @@ impl MpdND {
             let repeat = if status.repeat { "r" } else { "" };
             let random = if status.random { "z" } else { "" };
             let consume = if status.consume { "c" } else { "" };
-            let statuses = format!("[{}{}{}]", repeat, random, consume);
+            let statuses = format!("{}{}{}", repeat, random, consume);
 
             // TODO: custom duration formatting?
             let body_time = match (status.elapsed, status.duration) {
@@ -92,7 +92,8 @@ impl MpdND {
             };
 
             // TODO: custom summary/body format
-            let summary = format!("{} {} - {}", state, statuses, title);
+            let statuses_segment = if statuses == "" { String::new() } else { format!("[{}] ", statuses) };
+            let summary = format!("{} {}- {}", state, statuses_segment, title);
             let body = format!("<i>{}</i>\n{}", album, body_time);
 
             // TODO: relevant notification actions

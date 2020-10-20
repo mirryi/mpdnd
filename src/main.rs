@@ -16,7 +16,11 @@ use serde::Deserialize;
 pub struct Opts {
     #[clap(short, long, about = "Specify an alternate configuration file")]
     pub config: Option<String>,
-    #[clap(short, long, about = "Display a notification for the current status and exit")]
+    #[clap(
+        short,
+        long,
+        about = "Display a notification for the current status and exit"
+    )]
     pub now: bool,
 }
 
