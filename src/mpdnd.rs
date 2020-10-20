@@ -12,9 +12,6 @@ use mpd_client::{
 use notify_rust::Notification;
 use tokio::stream::StreamExt;
 
-// TODO: Custom appname
-const APPNAME: &str = "mpd";
-
 #[derive(Debug)]
 pub struct MpdND {
     config: Configuration,
@@ -51,7 +48,6 @@ impl MpdND {
             let status = self.client.command(commands::Status).await?;
 
             let song = song_in_queue.song;
-            // TODO: custom unknown title/album text
             let title = song.title().unwrap_or("Unknown title");
             let album = song.album().unwrap_or("Unknown album");
 
@@ -104,7 +100,7 @@ impl MpdND {
             // TODO: relevant notification actions
             let mut notification = Notification::new();
             notification
-                .appname(APPNAME)
+                .appname(&self.config.notification.appname)
                 .summary(&summary)
                 .body(&body)
                 .timeout(3000);
