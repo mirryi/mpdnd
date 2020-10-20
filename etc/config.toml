@@ -1,0 +1,22 @@
+[mpd]
+host = "localhost"
+port = 6600
+library = "~/music/library"
+cover-art-extensions = ["png", "jpg", "tiff", "bmp"]
+
+[notification]
+timeout = 3000
+default-cover-art = "~/music/library/aaa/cover.jpg"
+
+[notification.text]
+appname = "mpdnd"
+playing = "Playing!"
+paused = "Paused!"
+stopped = "Stopped!"
+repeat = "x"
+random = "y"
+consume = "z"
+status-group-left = "("
+status-group-right = ")"
+unknown-title-text = "???"
+unknown-album-text = "?????"
