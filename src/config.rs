@@ -44,6 +44,11 @@ impl MPD {
 pub struct Notification {
     #[serde(default = "Notification::default_timeout")]
     pub timeout: u32,
+    #[serde(
+        rename = "cover-art",
+        default = "Notification::default_cover_art_enabled"
+    )]
+    pub cover_art_enabled: bool,
     #[serde(rename = "default-cover-art")]
     pub default_cover_art: Option<String>,
     #[serde(default = "NotificationText::default")]
@@ -54,6 +59,7 @@ impl Default for Notification {
     fn default() -> Self {
         Self {
             timeout: Self::default_timeout(),
+            cover_art_enabled: Self::default_cover_art_enabled(),
             default_cover_art: None,
             text: NotificationText::default(),
         }
@@ -63,6 +69,10 @@ impl Default for Notification {
 impl Notification {
     fn default_timeout() -> u32 {
         3000
+    }
+
+    fn default_cover_art_enabled() -> bool {
+        true
     }
 }
 

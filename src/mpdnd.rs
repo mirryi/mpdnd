@@ -51,23 +51,6 @@ impl MpdND {
             let title = song.title().unwrap_or(&self.config.notification.text.unknown_title);
             let album = song.album().unwrap_or(&self.config.notification.text.unknown_album);
 
-            let file_path = song.file_path();
-            let library = PathBuf::from(self.config.mpd.library());
-            let image_path = library.join(file_path).parent().and_then(|v| {
-                if v.is_dir() {
-                    self.config.mpd.cover_art_extensions.iter().find_map(|ext| {
-                        let joined = v.join(format!("cover.{}", ext));
-                        if joined.exists() {
-                            Some(joined)
-                        } else {
-                            None
-                        }
-                    })
-                } else {
-                    None
-                }
-            }).or_else(|| self.config.notification.default_cover_art.clone().map(PathBuf::from));
-
             // TODO: custom state text
             let state = match status.state {
                 PlayState::Playing => "Playing",
@@ -104,9 +87,29 @@ impl MpdND {
                 .body(&body)
                 .timeout(Timeout::Milliseconds(self.config.notification.timeout));
 
-            // TODO: enable/disable cover art
-            if let Some(icon) = image_path {
-                notification.icon(&icon.to_string_lossy());
+            if self.config.notification.cover_art_enabled {
+                let file_path = song.file_path();
+                let library = PathBuf::from(self.config.mpd.library());
+                let image_path = library.join(file_path).parent().and_then(|v| {
+                    if v.is_dir() {
+                        self.config.mpd.cover_art_extensions.iter().find_map(|ext| {
+                            let joined = v.join(format!("cover.{}", ext));
+                            if joined.exists() {
+                                Some(joined)
+                            } else {
+                                None
+                            }
+                        })
+                    } else {
+                        None
+                    }
+                }).or_else(|| self.config.notification.default_cover_art.clone().map(PathBuf::from));
+
+
+                // TODO: enable/disable cover art
+                if let Some(icon) = image_path {
+                    notification.icon(&icon.to_string_lossy());
+                }
             }
 
             notification.show()?;
