@@ -9,7 +9,7 @@ use mpd_client::{
     state_changes::StateChanges,
     Client, Subsystem,
 };
-use notify_rust::Notification;
+use notify_rust::{Notification, Timeout};
 use tokio::stream::StreamExt;
 
 #[derive(Debug)]
@@ -66,7 +66,7 @@ impl MpdND {
                 } else {
                     None
                 }
-            });
+            }).or_else(|| self.config.notification.default_cover_art.clone().map(PathBuf::from));
 
             // TODO: custom state text
             let state = match status.state {
@@ -95,14 +95,13 @@ impl MpdND {
             let summary = format!("{} {} - {}", state, statuses, title);
             let body = format!("<i>{}</i>\n{}", album, body_time);
 
-            // TODO: custom timeout
             // TODO: relevant notification actions
             let mut notification = Notification::new();
             notification
                 .appname(&self.config.notification.text.appname)
                 .summary(&summary)
                 .body(&body)
-                .timeout(3000);
+                .timeout(Timeout::Milliseconds(self.config.notification.timeout));
 
             // TODO: enable/disable cover art
             if let Some(icon) = image_path {
