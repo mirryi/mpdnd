@@ -48,8 +48,12 @@ impl MpdND {
             let status = self.client.command(commands::Status).await?;
 
             let song = song_in_queue.song;
-            let title = song.title().unwrap_or(&self.config.notification.text.unknown_title);
-            let album = song.album().unwrap_or(&self.config.notification.text.unknown_album);
+            let title = song
+                .title()
+                .unwrap_or(&self.config.notification.text.unknown_title);
+            let album = song
+                .album()
+                .unwrap_or(&self.config.notification.text.unknown_album);
 
             // TODO: custom state text
             let state = match status.state {
@@ -75,7 +79,11 @@ impl MpdND {
             };
 
             // TODO: custom summary/body format
-            let statuses_segment = if statuses == "" { String::new() } else { format!("[{}] ", statuses) };
+            let statuses_segment = if statuses == "" {
+                String::new()
+            } else {
+                format!("[{}] ", statuses)
+            };
             let summary = format!("{} {}- {}", state, statuses_segment, title);
             let body = format!("<i>{}</i>\n{}", album, body_time);
 
@@ -90,21 +98,30 @@ impl MpdND {
             if self.config.notification.cover_art_enabled {
                 let file_path = song.file_path();
                 let library = PathBuf::from(self.config.mpd.library());
-                let image_path = library.join(file_path).parent().and_then(|v| {
-                    if v.is_dir() {
-                        self.config.mpd.cover_art_extensions.iter().find_map(|ext| {
-                            let joined = v.join(format!("cover.{}", ext));
-                            if joined.exists() {
-                                Some(joined)
-                            } else {
-                                None
-                            }
-                        })
-                    } else {
-                        None
-                    }
-                }).or_else(|| self.config.notification.default_cover_art.clone().map(PathBuf::from));
-
+                let image_path = library
+                    .join(file_path)
+                    .parent()
+                    .and_then(|v| {
+                        if v.is_dir() {
+                            self.config.mpd.cover_art_extensions.iter().find_map(|ext| {
+                                let joined = v.join(format!("cover.{}", ext));
+                                if joined.exists() {
+                                    Some(joined)
+                                } else {
+                                    None
+                                }
+                            })
+                        } else {
+                            None
+                        }
+                    })
+                    .or_else(|| {
+                        self.config
+                            .notification
+                            .default_cover_art
+                            .clone()
+                            .map(PathBuf::from)
+                    });
 
                 // TODO: enable/disable cover art
                 if let Some(icon) = image_path {
