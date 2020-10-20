@@ -48,8 +48,8 @@ impl MpdND {
             let status = self.client.command(commands::Status).await?;
 
             let song = song_in_queue.song;
-            let title = song.title().unwrap_or("Unknown title");
-            let album = song.album().unwrap_or("Unknown album");
+            let title = song.title().unwrap_or(&self.config.notification.unknown_title_text);
+            let album = song.album().unwrap_or(&self.config.notification.unknown_album_text);
 
             let file_path = song.file_path();
             let library = PathBuf::from(self.config.mpd.library());
