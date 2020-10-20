@@ -42,14 +42,24 @@ impl MPD {
 
 #[derive(Clone, Debug, Deserialize)]
 pub struct Notification {
+    #[serde(default = "Notification::default_timeout")]
+    pub timeout: u32,
+    #[serde(default = "NotificationText::default")]
     pub text: NotificationText,
 }
 
 impl Default for Notification {
     fn default() -> Self {
         Self {
+            timeout: Self::default_timeout(),
             text: NotificationText::default(),
         }
+    }
+}
+
+impl Notification {
+    fn default_timeout() -> u32 {
+        3000
     }
 }
 
