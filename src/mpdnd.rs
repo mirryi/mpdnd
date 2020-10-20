@@ -55,8 +55,7 @@ impl MpdND {
             let library = PathBuf::from(self.config.mpd.library());
             let image_path = library.join(file_path).parent().and_then(|v| {
                 if v.is_dir() {
-                    // TODO: setting to look for only some extensions
-                    ["png", "jpg", "tiff", "bmp"].iter().find_map(|ext| {
+                    self.config.mpd.cover_art_extensions.iter().find_map(|ext| {
                         let joined = v.join(format!("cover.{}", ext));
                         if joined.exists() {
                             Some(joined)

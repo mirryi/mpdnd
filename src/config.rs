@@ -16,6 +16,11 @@ pub struct MPDConfiguration {
     pub host: String,
     pub port: u32,
     pub library: String,
+    #[serde(
+        rename = "cover-art-extensions",
+        default = "MPDConfiguration::default_cover_art_extensions"
+    )]
+    pub cover_art_extensions: Vec<String>,
 }
 
 impl MPDConfiguration {
@@ -25,6 +30,13 @@ impl MPDConfiguration {
 
     pub fn library(&self) -> &Path {
         Path::new(&self.library)
+    }
+
+    fn default_cover_art_extensions() -> Vec<String> {
+        vec!["png", "jpg", "tiff", "bmp"]
+            .into_iter()
+            .map(String::from)
+            .collect()
     }
 }
 
