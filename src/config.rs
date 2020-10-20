@@ -42,31 +42,44 @@ impl MPD {
 
 #[derive(Clone, Debug, Deserialize)]
 pub struct Notification {
-    #[serde(default = "Notification::default_appname")]
-    pub appname: String,
-    #[serde(
-        rename = "unknown-title-text",
-        default = "Notification::default_unknown_title_text"
-    )]
-    pub unknown_title_text: String,
-    #[serde(
-        rename = "unknown-album-text",
-        default = "Notification::default_unknown_album_text"
-    )]
-    pub unknown_album_text: String,
+    pub text: NotificationText,
 }
 
 impl Default for Notification {
     fn default() -> Self {
         Self {
-            appname: Self::default_appname(),
-            unknown_title_text: Self::default_unknown_title_text(),
-            unknown_album_text: Self::default_unknown_album_text(),
+            text: NotificationText::default(),
         }
     }
 }
 
-impl Notification {
+#[derive(Clone, Debug, Deserialize)]
+pub struct NotificationText {
+    #[serde(default = "NotificationText::default_appname")]
+    pub appname: String,
+    #[serde(
+        rename = "unknown-title",
+        default = "NotificationText::default_unknown_title_text"
+    )]
+    pub unknown_title: String,
+    #[serde(
+        rename = "unknown-album",
+        default = "NotificationText::default_unknown_album_text"
+    )]
+    pub unknown_album: String,
+}
+
+impl Default for NotificationText {
+    fn default() -> Self {
+        Self {
+            appname: Self::default_appname(),
+            unknown_title: Self::default_unknown_title_text(),
+            unknown_album: Self::default_unknown_album_text(),
+        }
+    }
+}
+
+impl NotificationText {
     fn default_appname() -> String {
         String::from("mpd")
     }

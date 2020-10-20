@@ -48,8 +48,8 @@ impl MpdND {
             let status = self.client.command(commands::Status).await?;
 
             let song = song_in_queue.song;
-            let title = song.title().unwrap_or(&self.config.notification.unknown_title_text);
-            let album = song.album().unwrap_or(&self.config.notification.unknown_album_text);
+            let title = song.title().unwrap_or(&self.config.notification.text.unknown_title);
+            let album = song.album().unwrap_or(&self.config.notification.text.unknown_album);
 
             let file_path = song.file_path();
             let library = PathBuf::from(self.config.mpd.library());
@@ -99,7 +99,7 @@ impl MpdND {
             // TODO: relevant notification actions
             let mut notification = Notification::new();
             notification
-                .appname(&self.config.notification.appname)
+                .appname(&self.config.notification.text.appname)
                 .summary(&summary)
                 .body(&body)
                 .timeout(3000);
