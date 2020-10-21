@@ -18,7 +18,7 @@ port = 6600
 library = "~/music"
 ```
 
-See [etc/default.toml](etc/default.toml) for options and default values.
+See [`etc/default.toml`](etc/default.toml) for options and default values.
 
 ## Usage
 

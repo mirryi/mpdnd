@@ -60,8 +60,8 @@ random = "z"
 consume = "c"
 
 # The symbols to place to the left and right of the status group.
-status-group-left = "("
-status-group-right = ")"
+status-group-left = "["
+status-group-right = "]"
 
 # The text to be used when the title or album text is unknown.
 unknown-title-text = "Unknown title"
