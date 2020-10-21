@@ -33,6 +33,9 @@ cover-art-extensions = ["png", "jpg", "tiff", "bmp"]
 # The number of milliseconds until notification times out and disappears.
 timeout = 3000
 
+# Enable or disable showing cover art.
+cover-art = true
+
 # The path to image that should be set as the cover art if no cover art
 # is found for the track.
 #
