@@ -1,0 +1,68 @@
+# Default configuration values for mpdnd.
+#
+# Properties that are not commented out but have no value (e.g. host or
+# port) must be set manually.
+# Properties that are commented out have no default value and are optional.
+#
+# In paths, tilde (~) and environment variable expansion are supported.
+
+
+[mpd]
+
+# The address host of MPD to connect to.
+host =
+
+# The address port to connect on.
+port =
+
+# The path to the location of the MPD music library.
+library =
+
+# A list of file extensions to check for for cover art. cover.* is looked
+# for the directory the track file is located in. If no cover art is found,
+# the value of `notification.default-cover-art` is used, or no cover art
+# is displayed.
+#
+# By default, cover.png, cover.jpg, cover.tiff, and cover.bmp are checked
+# for.
+cover-art-extensions = ["png", "jpg", "tiff", "bmp"]
+
+
+[notification]
+
+# The number of milliseconds until notification times out and disappears.
+timeout = 3000
+
+# The path to image that should be set as the cover art if no cover art
+# is found for the track.
+#
+# By default, no fallback cover art is set.
+# default-cover-art =
+
+
+[notification.text]
+
+# The application name to use for notification. See Desktop Notification
+# specification:
+#   https://people.gnome.org/~mccann/docs/notification-spec/notification-spec-latest.html
+appname = "mpd"
+
+# The text to be shown when MPD is playing, paused, and stopped,
+# respectively.
+playing = "Playing"
+paused = "Paused"
+stopped = "Stopped"
+
+# The symbol used to indicate that repeat, random, and consume mode,
+# respectively, are active.
+repeat = "r"
+random = "z"
+consume = "c"
+
+# The symbols to place to the left and right of the status group.
+status-group-left = "("
+status-group-right = ")"
+
+# The text to be used when the title or album text is unknown.
+unknown-title-text = "Unknown title"
+unknown-album-text = "Unknown album"
