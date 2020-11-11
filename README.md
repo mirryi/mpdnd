@@ -6,10 +6,10 @@ mpdnd is a notification daemon for MPD.
 
 ## Installation
 
-Run `cargo install --git https://github.com/Dophin2009/mpdnd`.
+Run `cargo install mpdnd`.
 
-A configuration file at `$XDG_CONFIG_HOME/mpdnd/config.toml` must be
-created to look like this:
+A configuration file at `$XDG_CONFIG_HOME/mpdnd/config.toml` must be created to
+look like this:
 
 ``` toml
 [mpd]
