@@ -16,6 +16,6 @@ mpd_client = "0.4.0"
 notify-rust = "4"
 serde = { version = "1.0", features = ["derive"] }
 shellexpand = "2.0.0"
-tokio = { version = "0.2.13", features = ["rt-core", "tcp", "uds", "sync", "stream", "macros", "dns"] }
+tokio = { version = "0.3.6", features = ["rt", "net", "sync", "stream", "macros"] }
 toml = "0.5.7"
 xdg = "2.1"

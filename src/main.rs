@@ -24,7 +24,7 @@ pub struct Opts {
     pub now: bool,
 }
 
-#[tokio::main]
+#[tokio::main(flavor = "current_thread")]
 async fn main() -> Result<()> {
     let opts: Opts = Opts::parse();
 
