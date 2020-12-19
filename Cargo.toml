@@ -1,6 +1,6 @@
 [package]
 name = "mpdnd"
-version = "1.0.1"
+version = "1.0.2"
 authors = ["Eric Zhao <21zhaoe@protonmail.com>"]
 description = "A notification daemon for MPD."
 homepage = "https://github.com/Dophin2009/mpdnd"
