@@ -4,6 +4,7 @@ use std::path::{Path, PathBuf};
 
 use anyhow::Result;
 use chrono::Duration;
+use futures::StreamExt;
 use mpd_client::{
     commands::{
         self,
@@ -13,7 +14,6 @@ use mpd_client::{
     Client, Subsystem,
 };
 use notify_rust::{Notification, Timeout};
-use tokio::stream::StreamExt;
 
 #[derive(Debug)]
 pub struct MpdND {

@@ -90,9 +90,9 @@ checksum = "08c48aae112d48ed9f069b33538ea9e3e90aa263cfa3d1c24309612b1f7472de"
 
 [[package]]
 name = "bytes"
-version = "0.6.0"
+version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e0dcbc35f504eb6fc275a6d20e4ebcda18cf50d40ba6fabff8c711fa16cb3b16"
+checksum = "b700ce4376041dcd0a327fd0097c41095743c4c8af8887265942faf1100bd040"
 
 [[package]]
 name = "cc"
@@ -230,6 +230,7 @@ checksum = "9b3b0c040a1fe6529d30b3c5944b280c7f0dcb2930d2c3062bca967b602583d0"
 dependencies = [
  "futures-channel",
  "futures-core",
+ "futures-executor",
  "futures-io",
  "futures-sink",
  "futures-task",
@@ -253,10 +254,33 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "847ce131b72ffb13b6109a221da9ad97a64cbe48feb1028356b836b47b8f1748"
 
 [[package]]
+name = "futures-executor"
+version = "0.3.8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4caa2b2b68b880003057c1dd49f1ed937e38f22fcf6c212188a121f08cf40a65"
+dependencies = [
+ "futures-core",
+ "futures-task",
+ "futures-util",
+]
+
+[[package]]
 name = "futures-io"
 version = "0.3.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "611834ce18aaa1bd13c4b374f5d653e1027cf99b6b502584ff8c9a64413b30bb"
+
+[[package]]
+name = "futures-macro"
+version = "0.3.8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "77408a692f1f97bcc61dc001d752e00643408fbc922e4d634c655df50d595556"
+dependencies = [
+ "proc-macro-hack",
+ "proc-macro2",
+ "quote 1.0.7",
+ "syn 1.0.54",
+]
 
 [[package]]
 name = "futures-sink"
@@ -282,11 +306,14 @@ dependencies = [
  "futures-channel",
  "futures-core",
  "futures-io",
+ "futures-macro",
  "futures-sink",
  "futures-task",
  "memchr",
  "pin-project 1.0.2",
  "pin-utils",
+ "proc-macro-hack",
+ "proc-macro-nested",
  "slab",
 ]
 
@@ -426,9 +453,9 @@ dependencies = [
 
 [[package]]
 name = "mpd_client"
-version = "0.4.0"
+version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "13aa8c5ee15dcaadea7212dc3513cbadebe55e686b234fa9075df1acbc1c5fcc"
+checksum = "f5a94fd025bafab098752586932d25e57c07062e3617dfc4ec594d0590ae8614"
 dependencies = [
  "chrono",
  "futures",
@@ -441,9 +468,9 @@ dependencies = [
 
 [[package]]
 name = "mpd_protocol"
-version = "0.10.1"
+version = "0.11.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6d25e869689585cf78bc7fea2392710b3c96c9d8fb0c8cbe28d7338d1f62b24d"
+checksum = "264d1a212184a897552be90a8348b3abbd22cbb62b8117e956cf82e89988ec7e"
 dependencies = [
  "bytes",
  "fxhash",
@@ -460,6 +487,7 @@ dependencies = [
  "anyhow",
  "chrono",
  "clap",
+ "futures",
  "mpd_client",
  "notify-rust",
  "serde",
@@ -641,6 +669,18 @@ dependencies = [
  "quote 1.0.7",
  "version_check",
 ]
+
+[[package]]
+name = "proc-macro-hack"
+version = "0.5.19"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "dbf0c48bc1d91375ae5c3cd81e3722dff1abcf81a30960240640d223f59fe0e5"
+
+[[package]]
+name = "proc-macro-nested"
+version = "0.1.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bc881b2c22681370c6a780e47af9840ef841837bc98118431d4e1868bd0c1086"
 
 [[package]]
 name = "proc-macro2"
@@ -837,26 +877,24 @@ dependencies = [
 
 [[package]]
 name = "tokio"
-version = "0.3.6"
+version = "1.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "720ba21c25078711bf456d607987d95bce90f7c3bea5abe1db587862e7a1e87c"
+checksum = "6714d663090b6b0acb0fa85841c6d66233d150cdb2602c8f9b8abb03370beb3f"
 dependencies = [
  "autocfg",
  "bytes",
- "futures-core",
  "libc",
  "memchr",
  "mio",
  "pin-project-lite",
- "slab",
  "tokio-macros",
 ]
 
 [[package]]
 name = "tokio-macros"
-version = "0.3.1"
+version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "21d30fdbb5dc2d8f91049691aa1a9d4d4ae422a21c334ce8936e5886d30c5c45"
+checksum = "42517d2975ca3114b22a16192634e8241dc5cc1f130be194645970cc1c371494"
 dependencies = [
  "proc-macro2",
  "quote 1.0.7",
@@ -865,9 +903,9 @@ dependencies = [
 
 [[package]]
 name = "tokio-util"
-version = "0.5.1"
+version = "0.6.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3137de2b078e95274b696cc522e87f22c9a753fe3ef3344116ffb94f104f10a3"
+checksum = "ebb7cb2f00c5ae8df755b252306272cd1790d39728363936e01827e11f0b017b"
 dependencies = [
  "bytes",
  "futures-core",
