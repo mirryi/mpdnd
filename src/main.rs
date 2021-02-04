@@ -5,9 +5,9 @@ use config::Configuration;
 use mpdnd::MpdND;
 
 use std::fs;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
-use anyhow::Result;
+use anyhow::{Context, Result};
 use clap::{crate_version, Clap};
 use serde::Deserialize;
 
@@ -32,9 +32,9 @@ async fn main() -> Result<()> {
         Some(v) => PathBuf::from(v),
         None => config::default_file()?,
     };
-    let config_str = fs::read_to_string(&config_path)?;
-    let config: Configuration = toml::from_str(&config_str)?;
 
+    let config = load_config(&config_path)
+        .with_context(|| format!("Couldn't load configuration from {}", config_path.display()))?;
     let mut mpdnd = MpdND::connect(config).await?;
     if opts.now {
         mpdnd.notify().await?;
@@ -43,4 +43,10 @@ async fn main() -> Result<()> {
     }
 
     Ok(())
+}
+
+fn load_config(path: impl AsRef<Path>) -> Result<Configuration> {
+    let config_str = fs::read_to_string(path)?;
+    let config = toml::from_str(&config_str)?;
+    Ok(config)
 }

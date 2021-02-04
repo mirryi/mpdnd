@@ -2,7 +2,7 @@ use crate::config::Configuration;
 
 use std::path::{Path, PathBuf};
 
-use anyhow::Result;
+use anyhow::{Context, Result};
 use chrono::Duration;
 use futures::StreamExt;
 use mpd_client::{
@@ -25,7 +25,9 @@ pub struct MpdND {
 impl MpdND {
     pub async fn connect(config: Configuration) -> Result<Self> {
         let address = config.mpd.address();
-        let (client, state_changes) = Client::connect_to(&address).await?;
+        let (client, state_changes) = Client::connect_to(&address)
+            .await
+            .with_context(|| format!("Couldn't connect to MPD instance at {}", address))?;
 
         Ok(Self {
             config,
