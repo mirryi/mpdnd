@@ -48,9 +48,17 @@ impl MpdND {
     }
 
     pub async fn notify(&self) -> Result<()> {
-        let current = self.client.command(commands::CurrentSong).await?;
+        let current = self
+            .client
+            .command(commands::CurrentSong)
+            .await
+            .with_context(|| format!("Failed to query the current track."))?;
         if let Some(song_in_queue) = current {
-            let status = self.client.command(commands::Status).await?;
+            let status = self
+                .client
+                .command(commands::Status)
+                .await
+                .with_context(|| format!("Failed to query the current track's status."))?;
 
             let song = song_in_queue.song;
             let title = song
