@@ -14,8 +14,10 @@ use mpd_client::{
     Client, Subsystem,
 };
 use notify_rust::{Notification, Timeout};
+use tokio::net::TcpStream;
 
 #[derive(Debug)]
+#[allow(clippy::upper_case_acronyms)]
 pub struct MpdND {
     config: Configuration,
     client: Client,
@@ -25,9 +27,8 @@ pub struct MpdND {
 impl MpdND {
     pub async fn connect(config: Configuration) -> Result<Self> {
         let address = config.mpd.address();
-        let (client, state_changes) = Client::connect_to(&address)
-            .await
-            .with_context(|| format!("Couldn't connect to MPD instance at {}", address))?;
+        let connection = TcpStream::connect(&address).await?;
+        let (client, state_changes) = Client::connect(connection).await?;
 
         Ok(Self {
             config,
@@ -37,8 +38,7 @@ impl MpdND {
     }
 
     pub async fn watch(&mut self) -> Result<()> {
-        while let Some(subsys) = self.state_changes.next().await {
-            let subsys = subsys?;
+        while let Some(subsys) = self.state_changes.next().await.transpose()? {
             if subsys == Subsystem::Player || subsys == Subsystem::Queue {
                 self.notify().await?;
             }
@@ -52,13 +52,13 @@ impl MpdND {
             .client
             .command(commands::CurrentSong)
             .await
-            .with_context(|| format!("Failed to query the current track."))?;
+            .with_context(|| "Failed to query the current track.")?;
         if let Some(song_in_queue) = current {
             let status = self
                 .client
                 .command(commands::Status)
                 .await
-                .with_context(|| format!("Failed to query the current track's status."))?;
+                .with_context(|| "Failed to query the current track's status.")?;
 
             let song = song_in_queue.song;
             let title = song

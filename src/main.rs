@@ -35,7 +35,12 @@ async fn main() -> Result<()> {
 
     let config = load_config(&config_path)
         .with_context(|| format!("Couldn't load configuration from {}", config_path.display()))?;
-    let mut mpdnd = MpdND::connect(config).await?;
+    let mut mpdnd = MpdND::connect(config.clone()).await.with_context(|| {
+        format!(
+            "Couldn't connect to MPD instance at {}",
+            config.mpd.address()
+        )
+    })?;
     if opts.now {
         mpdnd.notify().await?;
     } else {
