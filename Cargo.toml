@@ -13,7 +13,7 @@ anyhow = "1.0.33"
 chrono = "0.4.19"
 clap = "3.0.0-beta.2"
 futures = "0.3"
-mpd_client = "0.5.0"
+mpd_client = "0.6.0"
 notify-rust = "4"
 serde = { version = "1.0", features = ["derive"] }
 shellexpand = "2.0.0"
