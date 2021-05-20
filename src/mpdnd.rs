@@ -8,7 +8,7 @@ use futures::StreamExt;
 use mpd_client::{
     commands::{
         self,
-        responses::{PlayState, Song, Status},
+        responses::{PlayState, Song, SongInQueue, Status},
     },
     state_changes::StateChanges,
     Client, Subsystem,
@@ -39,8 +39,11 @@ impl MpdND {
 
     pub async fn watch(&mut self) -> Result<()> {
         while let Some(subsys) = self.state_changes.next().await.transpose()? {
-            if subsys == Subsystem::Player || subsys == Subsystem::Queue {
-                self.notify().await?;
+            match subsys {
+                Subsystem::Player | Subsystem::Queue => {
+                    self.notify().await?;
+                }
+                _ => {}
             }
         }
 
@@ -53,6 +56,7 @@ impl MpdND {
             .command(commands::CurrentSong)
             .await
             .with_context(|| "Failed to query the current track.")?;
+
         if let Some(song_in_queue) = current {
             let status = self
                 .client
@@ -60,55 +64,63 @@ impl MpdND {
                 .await
                 .with_context(|| "Failed to query the current track's status.")?;
 
-            let song = song_in_queue.song;
-            let title = song
-                .title()
-                .unwrap_or(&self.config.notification.text.unknown_title);
-            let album = song
-                .album()
-                .unwrap_or(&self.config.notification.text.unknown_album);
-
-            let state = match status.state {
-                PlayState::Playing => &self.config.notification.text.playing,
-                PlayState::Paused => &self.config.notification.text.paused,
-                PlayState::Stopped => &self.config.notification.text.stopped,
-            };
-
-            let statuses = self.statuses_segment(&status);
-
-            // TODO: custom duration formatting?
-            let body_time = match (status.elapsed, status.duration) {
-                (Some(elapsed), Some(duration)) => {
-                    let elap = Duration::from_std(elapsed)?;
-                    let total = Duration::from_std(duration)?;
-                    format!("{} / {}", format_duration(&elap), format_duration(&total))
-                }
-                _ => String::new(),
-            };
-
-            // TODO: custom summary/body format
-            let summary = format!("{} {}- {}", state, statuses, title);
-            let body = format!("<i>{}</i>\n{}", album, body_time);
-
-            // TODO: relevant notification actions
-            let mut notification = Notification::new();
-            notification
-                .appname(&self.config.notification.text.appname)
-                .summary(&summary)
-                .body(&body)
-                .timeout(Timeout::Milliseconds(self.config.notification.timeout));
-
-            if self.config.notification.cover_art_enabled {
-                let image_path = self.cover_art_path(&song);
-                if let Some(icon) = image_path {
-                    notification.icon(&icon.to_string_lossy());
-                }
-            }
-
-            notification.show()?;
+            self.build_notification(song_in_queue, status)?.show()?;
         }
 
         Ok(())
+    }
+
+    fn build_notification(
+        &self,
+        song_in_queue: SongInQueue,
+        status: Status,
+    ) -> Result<Notification> {
+        let song = song_in_queue.song;
+        let title = song
+            .title()
+            .unwrap_or(&self.config.notification.text.unknown_title);
+        let album = song
+            .album()
+            .unwrap_or(&self.config.notification.text.unknown_album);
+
+        let state = match status.state {
+            PlayState::Playing => &self.config.notification.text.playing,
+            PlayState::Paused => &self.config.notification.text.paused,
+            PlayState::Stopped => &self.config.notification.text.stopped,
+        };
+
+        let statuses = self.statuses_segment(&status);
+
+        // TODO: custom duration formatting?
+        let body_time = match (status.elapsed, status.duration) {
+            (Some(elapsed), Some(duration)) => {
+                let elap = Duration::from_std(elapsed)?;
+                let total = Duration::from_std(duration)?;
+                format!("{} / {}", format_duration(&elap), format_duration(&total))
+            }
+            _ => String::new(),
+        };
+
+        // TODO: custom summary/body format
+        let summary = format!("{} {}- {}", state, statuses, title);
+        let body = format!("<i>{}</i>\n{}", album, body_time);
+
+        // TODO: relevant notification actions
+        let mut notification = Notification::new();
+        notification
+            .appname(&self.config.notification.text.appname)
+            .summary(&summary)
+            .body(&body)
+            .timeout(Timeout::Milliseconds(self.config.notification.timeout));
+
+        if self.config.notification.cover_art_enabled {
+            let image_path = self.cover_art_path(&song);
+            if let Some(icon) = image_path {
+                notification.icon(&icon.to_string_lossy());
+            }
+        }
+
+        Ok(notification)
     }
 
     fn cover_art_path(&self, song: &Song) -> Option<PathBuf> {
