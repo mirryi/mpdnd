@@ -1,3 +1,6 @@
+[![Build status](https://github.com/Dophin2009/mpdnd/workflows/ci/badge.svg)](https://github.com/Dophin2009/mpdnd/actions)
+[![Crates.io](https://img.shields.io/crates/v/mpdnd.svg)](https://crates.io/crates/mpdnd)
+
 # mpdnd
 
 mpdnd is a notification daemon for MPD.
