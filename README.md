@@ -7,11 +7,23 @@ mpdnd is a notification daemon for MPD.
 
 ![An example notification](assets/example.png)
 
+It uses [notify-rust](https://github.com/hoodie/notify-rust), so it emits:
+
+-   XDG desktop notifications on Linux/BSD
+-   NSNotification on macOS
+-   WinRT toast notifications on Windows
+
 ## Installation
 
-Run `cargo install mpdnd`.
+Install via Cargo:
 
-A configuration file at `$XDG_CONFIG_HOME/mpdnd/config.toml` must be created to
+```bash
+$ cargo install mpdnd
+```
+
+## Configuration
+
+A configuration file at `${XDG_CONFIG_HOME}/mpdnd/config.toml` must be created to
 look like this:
 
 ``` toml
@@ -25,4 +37,16 @@ See [`etc/default.toml`](etc/default.toml) for options and default values.
 
 ## Usage
 
-See `mpdnd --help`.
+See `mpdnd --help` for full details.
+
+To listen for MPD song changes and emit notificiations:
+
+```bash
+$ mpdnd
+```
+
+To emit a notification for the current song:
+
+```bash
+$ mpdnd -n
+```
