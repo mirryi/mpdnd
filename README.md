@@ -7,11 +7,9 @@ mpdnd is a notification daemon for MPD.
 
 ![An example notification](assets/example.png)
 
-It uses [notify-rust](https://github.com/hoodie/notify-rust), so it emits:
-
--   XDG desktop notifications on Linux/BSD
--   NSNotification on macOS
--   WinRT toast notifications on Windows
+mpdnd does not display notifications itself, it simply emits [XDG Desktop Notifications
+Specification](https://specifications.freedesktop.org/notification-spec/notification-spec-latest.html)
+notifications.
 
 ## Installation
 
