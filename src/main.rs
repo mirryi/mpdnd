@@ -8,18 +8,18 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 use anyhow::{Context, Result};
-use clap::{crate_version, Clap};
+use clap::{crate_authors, crate_version, Parser};
 use serde::Deserialize;
 
-#[derive(Clap, Clone, Debug, Deserialize)]
-#[clap(version = crate_version!(), author = env!("CARGO_PKG_AUTHORS"), about = "MPD notification daemon")]
+#[derive(Parser, Clone, Debug, Deserialize)]
+#[clap(version = crate_version!(), author = crate_authors!(), about = "MPD notification daemon")]
 pub struct Opts {
-    #[clap(short, long, about = "Specify an alternate configuration file")]
+    #[clap(short, long, help = "Specify an alternate configuration file")]
     pub config: Option<String>,
     #[clap(
         short,
         long,
-        about = "Display a notification for the current status and exit"
+        help = "Display a notification for the current status and exit"
     )]
     pub now: bool,
 }

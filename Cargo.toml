@@ -14,7 +14,7 @@ msrv = "1.46.0"
 [dependencies]
 anyhow = "1.0.33"
 chrono = "0.4.19"
-clap = "3.0.0-beta.2"
+clap = { version = "3.0", features = ["cargo", "derive"]}
 futures = "0.3"
 mpd_client = "0.6.0"
 notify-rust = "4"
