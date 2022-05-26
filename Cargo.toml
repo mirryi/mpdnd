@@ -3,8 +3,8 @@ name = "mpdnd"
 version = "1.0.4"
 authors = ["Eric Zhao <21zhaoe@protonmail.com>"]
 description = "A notification daemon for MPD."
-homepage = "https://github.com/Dophin2009/mpdnd"
-repository = "https://github.com/Dophin2009/mpdnd.git"
+homepage = "https://github.com/mirryi/mpdnd"
+repository = "https://github.com/mirryi/mpdnd.git"
 license = "MIT"
 edition = "2018"
 

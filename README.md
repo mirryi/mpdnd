@@ -1,4 +1,4 @@
-[![Build status](https://github.com/Dophin2009/mpdnd/workflows/ci/badge.svg)](https://github.com/Dophin2009/mpdnd/actions)
+[![Build status](https://github.com/mirryi/mpdnd/workflows/ci/badge.svg)](https://github.com/mirryi/mpdnd/actions)
 [![Crates.io](https://img.shields.io/crates/v/mpdnd.svg)](https://crates.io/crates/mpdnd)
 
 # mpdnd
