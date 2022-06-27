@@ -12,14 +12,14 @@ edition = "2018"
 msrv = "1.54.0"
 
 [dependencies]
-anyhow = "1.0.33"
-chrono = "0.4.19"
-clap = { version = "3.0", features = ["cargo", "derive"]}
+anyhow = "1.0"
+chrono = "0.4"
+clap = { version = "3.2", features = ["cargo", "derive"] }
 futures = "0.3"
-mpd_client = "0.6.0"
-notify-rust = "4"
+mpd_client = "0.7"
+notify-rust = "4.5"
 serde = { version = "1.0", features = ["derive"] }
-shellexpand = "2.0.0"
-tokio = { version = "1.1.1", features = ["rt", "net", "sync", "macros"] }
-toml = "0.5.7"
-xdg = "2.1"
+shellexpand = "2.1"
+tokio = { version = "1.19", features = ["rt", "net", "sync", "macros"] }
+toml = "0.5"
+xdg = "2.4"
